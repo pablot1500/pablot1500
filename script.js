@@ -499,8 +499,9 @@ function handleRewardsClick() {
     rewardsContainer.style.alignItems = "center";
     rewardsContainer.style.width = "100%";
     rewardsContainer.style.maxWidth = "600px";
-    rewardsContainer.style.gap = "20px";
+    rewardsContainer.style.gap = "30px";
     rewardsContainer.style.position = "relative";
+    rewardsContainer.style.bottom = "50px";
 
     // Crear el elemento para mostrar los puntos
     const pointsElement = document.createElement("div");
@@ -874,74 +875,4 @@ if (initialRewardsButton) {
     initialRewardsButton.addEventListener("click", handleRewardsClick);
 }
 
-// Añadir estilos específicos para recompensas en el CSS
-// Puedes agregar estos estilos al final de tu archivo styles.css
-const style = document.createElement('style');
-style.innerHTML = `
-.reward-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid white;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    margin-bottom: 10px;
-}
-
-.reward-name {
-    flex: 1;
-    text-align: left;
-}
-
-.reward-points {
-    margin-left: 10px;
-}
-
-.reward-checkbox {
-    margin-left: 10px;
-}
-
-/* Estilos para ítems deshabilitados en la sección de recompensas */
-.disabled-reward {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: rgba(128, 128, 128, 0.2);
-}
-
-/* Estilos para el resumen de canje */
-.canje-summary {
-    font-size: 1.2em;
-    color: #fff;
-    margin-top: 10px;
-    text-align: center;
-}
-
-/* Estilos para el botón "Canjear" */
-.canjear-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    background-color: #28a745;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.canjear-button:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-}
-
-/* Estilos para ítems deshabilitados en la lista de recompensas */
-.reward-item.disabled-reward {
-    opacity: 0.5;
-    pointer-events: none;
-    cursor: not-allowed;
-}
-`;
 document.head.appendChild(style);

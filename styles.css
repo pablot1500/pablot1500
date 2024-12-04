@@ -543,11 +543,11 @@ body, html {
     justify-content: space-between;
     width: 80%;
     max-width: 400px;
-    margin-bottom: 0px;
+    margin-bottom: -15px;
 }
 
 .candies-container.candies-bottom {
-    margin-top: 0px;
+    margin-top: -15px;
     margin-bottom: 0;
 }
 
@@ -572,8 +572,8 @@ body, html {
     align-items: center;
     justify-content: space-between;
     border: 1px solid white;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 4px;
+    border-radius: 3px;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
@@ -631,7 +631,7 @@ body, html {
 /* Estilos para el resumen de canje */
 .canje-summary {
     position: absolute; /* Cambia la posición a absoluta */
-    top: 550px; /* Ajusta esta distancia según la posición deseada */
+    top: 540px; /* Ajusta esta distancia según la posición deseada */
     left: 50%; /* Centra horizontalmente */
     transform: translateX(-50%); /* Asegura el centrado perfecto */
     font-size: 1.2em; /* Ajusta el tamaño del texto */
@@ -642,7 +642,7 @@ body, html {
 /* Estilos para el botón "Canjear" */
 .canjear-button {
     position: absolute; /* Cambia la posición a absoluta */
-    top: 580px; /* Ajusta esta distancia para moverlo más arriba */
+    top: 620px; /* Ajusta esta distancia para moverlo más arriba */
     left: 50%; /* Centra el botón horizontalmente */
     transform: translateX(-50%); /* Asegura que el centrado sea perfecto */
     padding: 10px 20px;
