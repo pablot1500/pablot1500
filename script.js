@@ -593,12 +593,6 @@ function handleRewardsClick() {
 
     rewardsContainer.appendChild(candiesBottomContainer);
 
-    // Crear el resumen de canje
-    const summaryContainer = document.createElement("div");
-    summaryContainer.classList.add("canje-summary");
-    summaryContainer.textContent = "Vas a canjear: ";
-    rewardsContainer.appendChild(summaryContainer);
-
     // Crear el botón "Canjear"
     const canjearButton = document.createElement("button");
     canjearButton.textContent = "Canjear";
@@ -638,9 +632,6 @@ function handleRewardsClick() {
     // Seleccionar todos los checkboxes
     const checkboxes = rewardsList.querySelectorAll('.reward-checkbox');
 
-    // Elementos para resumen
-    const canjeSummary = summaryContainer;
-
     // Estado de selección
     let selectedItems = [];
 
@@ -655,9 +646,9 @@ function handleRewardsClick() {
         // Calcular los puntos restantes
         const remainingPoints = totalPoints - totalSelectedPoints;
 
-        // Actualizar el resumen
-        const names = selectedItems.map(cb => cb.dataset.name);
-        canjeSummary.textContent = `Vas a canjear: ${names.join(' + ')}`;
+        // **Eliminar la actualización del resumen "Vas a canjear:"**
+        // const names = selectedItems.map(cb => cb.dataset.name);
+        // canjeSummary.textContent = `Vas a canjear: ${names.join(' + ')}`;
 
         // Actualizar los puntos posibles en la parte superior
         pointsElement.textContent = `Puntos para recompensa: ${totalPoints} - ${totalSelectedPoints} = ${remainingPoints}`;

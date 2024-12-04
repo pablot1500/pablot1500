@@ -628,16 +628,6 @@ body, html {
     background-color: rgba(128, 128, 128, 0.2);
 }
 
-/* Estilos para el resumen de canje */
-.canje-summary {
-    position: absolute; /* Cambia la posición a absoluta */
-    top: 540px; /* Ajusta esta distancia según la posición deseada */
-    left: 50%; /* Centra horizontalmente */
-    transform: translateX(-50%); /* Asegura el centrado perfecto */
-    font-size: 1.2em; /* Ajusta el tamaño del texto */
-    color: #fff; /* Asegúrate de que el texto sea legible */
-    text-align: center; /* Centra el texto si ocupa varias líneas */
-}
 
 /* Estilos para el botón "Canjear" */
 .canjear-button {
@@ -665,14 +655,6 @@ body, html {
     opacity: 0.5;
     pointer-events: none;
     cursor: not-allowed;
-}
-
-/* Estilos para el resumen de canje */
-.canje-summary {
-    font-size: 1.2em;
-    color: #fff;
-    margin-top: 10px;
-    text-align: center;
 }
 
 /* Estilos para el botón "Volver al menú principal" */
