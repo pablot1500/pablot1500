@@ -739,6 +739,13 @@ body, html {
 /* Posicionamiento específico para el botón "Reproducir Música" */
 .music-toggle {
     position: fixed;
-    bottom: 820px; /* Ajusta este valor para mover hacia arriba o abajo */
-    left: 60px;    /* Ajusta este valor para mover hacia la izquierda o derecha */
+    bottom: 90%; /* Usa un porcentaje para ajustar mejor en pantallas de diferentes tamaños */
+    left: 10%;   /* Usa un porcentaje para mantenerlo cerca del borde pero flexible */
+    padding: 5px 10px;
+    background-color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001; /* Asegura que esté por encima de otros elementos */
+    transition: transform 0.3s ease;
 }
