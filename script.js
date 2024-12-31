@@ -1,5 +1,74 @@
 // script.js
 
+
+// Referencias a los botones
+const birthdayButton = document.getElementById('birthday-button');
+
+// Escuchar el clic en el botón "Cumple Panchita?"
+birthdayButton.addEventListener('click', () => {
+    // 1. Pausar la música
+    backgroundMusic.pause();
+
+    // 2. Ocultar el botón "Reproducir Música" y el botón "Cumple Panchita?"
+    if (musicToggle) {
+        musicToggle.style.display = 'none';
+    }
+    birthdayButton.style.display = 'none';  // Desaparece el botón que acabamos de clickear
+
+    // 3. Limpiar el contenido de .container, dejando solo el marco blanco
+    container.innerHTML = `
+        <div class="white-frame" 
+             style="display: flex; justify-content: center; align-items: center; position: relative;">
+        </div>
+    `;
+    const whiteFrame = container.querySelector('.white-frame');
+
+    // 4. Tipear el mensaje
+    const messageToType = "Muy bien! Descifraste la tan enigmática pista y encontraste el regalo. Te amo!!!";
+    let currentIndex = 0;
+
+    // Párrafo donde se escribirá el texto
+    const typedParagraph = document.createElement('p');
+    typedParagraph.style.color = '#fff';
+    typedParagraph.style.textAlign = 'center';
+    typedParagraph.style.fontFamily = "'Courier New', Courier, monospace";
+    typedParagraph.style.fontSize = '1.4em';
+    typedParagraph.style.maxWidth = '60%';
+    typedParagraph.style.margin = '20px';
+    whiteFrame.appendChild(typedParagraph);
+
+    // Función de tipeo
+    const typingInterval = setInterval(() => {
+        if (currentIndex < messageToType.length) {
+            typedParagraph.textContent += messageToType.charAt(currentIndex);
+            currentIndex++;
+        } else {
+            clearInterval(typingInterval);
+
+            // 5. Esperar 1 segundo y luego mostrar el botón "Felices 2 años corazón" más arriba
+            setTimeout(() => {
+                const newButton = document.createElement('button');
+                newButton.textContent = "Felices 2 años corazón";
+                newButton.classList.add("rewards-button");
+        
+                // Posicionamiento más arriba
+                newButton.style.position = 'absolute';
+                newButton.style.bottom = '250px';
+                newButton.style.left = '50%';
+                newButton.style.transform = 'translateX(-50%)';
+        
+                // Redirección al hacer clic
+                newButton.addEventListener('click', () => {
+                    window.location.href = "https://drive.google.com/file/d/1aF_ropzAzedptNYMDtZpSgi5IZtVFo7w/view?usp=drivesdk";
+                });
+        
+                whiteFrame.appendChild(newButton);
+            }, 1000);
+        }
+    }, 50);
+});
+
+
 // 1. Crear y reproducir la música de fondo
 const backgroundMusic = new Audio('sonidos/panchita.mp3'); // Ruta relativa al archivo script.js
 backgroundMusic.loop = true; // Repetir la música indefinidamente
@@ -24,6 +93,7 @@ musicToggle.addEventListener('click', () => {
         musicToggle.textContent = 'Reproducir Música';
     }
 });
+
 
 // 2. Crear el sonido de clic
 const clickSound = new Audio('sonidos/click.mp3'); // Ruta relativa al archivo script.js
@@ -867,3 +937,6 @@ if (initialRewardsButton) {
 }
 
 document.head.appendChild(style);
+
+
+
