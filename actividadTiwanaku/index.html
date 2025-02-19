@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividad Ayudantía Tiwanaku</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ccc;
+      font-family: Arial, sans-serif;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ccc;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .splash-screen h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: black;
+    }
+    .splash-screen p {
+      font-size: 1.2em;
+      color: black;
+    }
+    .game-container {
+      display: none; /* Oculto inicialmente */
+      position: relative;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .image-grid {
+      margin-top: 100px;
+      margin-bottom: 100px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      justify-content: center;
+      background: #ccc;
+      overflow: hidden;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      will-change: transform, opacity;
+    }
+    .image-item {
+      background: #fff;
+      border: 2px solid black;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      color: black;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      will-change: transform;
+    }
+    /* Área de ingreso: centrada en la parte inferior */
+    #inputArea {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    /* Contenedor fijo para las letras (wrapper) */
+    .letter-container-wrapper {
+      position: relative;
+      margin: 0 auto;
+    }
+    /* Contenedor de letras: centrado dentro del wrapper */
+    .letter-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .letter-box {
+      width: 40px;
+      height: 60px;
+      border-bottom: 2px solid black;
+      font-size: 2em;
+      text-align: center;
+      line-height: 60px;
+      opacity: 0.5;
+      color: black;
+    }
+    .letter-box.revealed {
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+    /* Ícono de feedback posicionado absolutamente a la derecha del wrapper */
+    .feedback-icon {
+      position: absolute;
+      left: calc(100% + 50px); /* 50px a la derecha del contenedor de letras */
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2em;
+      opacity: 0;
+      transition: opacity 0.3s;
+      color: black;
+    }
+    .feedback-icon.show {
+      opacity: 1;
+    }
+    /* Animaciones fade */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s forwards;
+    }
+    .fade-out {
+      animation: fadeOut 0.5s forwards;
+    }
+    @keyframes reveal {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .reveal-animation {
+      animation: reveal 0.5s forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-screen" id="splashScreen">
+    <h1>Actividad Ayudantía Tiwanaku</h1>
+    <p>Presiona Enter para iniciar</p>
+  </div>
+
+  <div class="game-container" id="gameContainer">
+    <div class="image-grid" id="imageGrid">
+      <div class="image-item">1
+        <!-- Futuras imágenes se insertarán aquí -->
+      </div>
+      <div class="image-item">2
+        <!-- Futuras imágenes se insertarán aquí -->
+      </div>
+      <div class="image-item">3
+        <!-- Futuras imágenes se insertarán aquí -->
+      </div>
+      <div class="image-item">4
+        <!-- Futuras imágenes se insertarán aquí -->
+      </div>
+    </div>
+    <div id="inputArea">
+      <div class="letter-container-wrapper">
+        <div class="letter-container" id="letterContainer">
+          <!-- Se generan las cajas dinámicamente -->
+        </div>
+        <span class="feedback-icon" id="feedbackIcon"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pantalla final similar al splash-screen -->
+  <div class="splash-screen" id="endScreen" style="display: none;">
+    <h1>¡Juego terminado!</h1>
+  </div>
+
+  <script>
+    const words = ["DUALIDAD", "MONUMENTALIDAD", "RECIPROCIDAD", "COMPLEMENTARIEDAD"];
+    let currentWordIndex = 0;
+    let currentWord = words[currentWordIndex];
+    let revealedLetters = Array(currentWord.length).fill(false);
+    let wordCompleted = false;
+    // Bandera para controlar si se puede avanzar a la siguiente palabra
+    let canAdvance = false;
+    // Bandera para bloquear la entrada durante la transición
+    let isTransitioning = false;
+
+    const splashScreen = document.getElementById('splashScreen');
+    const gameContainer = document.getElementById('gameContainer');
+    const letterContainer = document.getElementById('letterContainer');
+    const feedbackIcon = document.getElementById('feedbackIcon');
+    const imageGrid = document.getElementById('imageGrid');
+    const endScreen = document.getElementById('endScreen');
+
+    function startGame() {
+      splashScreen.classList.add('fade-out');
+      splashScreen.addEventListener('animationend', () => {
+        splashScreen.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        gameContainer.classList.add('fade-in');
+        initWord();
+        updateImageSize();
+      }, { once: true });
+    }
+
+    function initWord() {
+      letterContainer.innerHTML = '';
+      currentWord = words[currentWordIndex];
+      revealedLetters = Array(currentWord.length).fill(false);
+      wordCompleted = false;
+      // Al iniciar cada palabra, reseteamos la posibilidad de avanzar
+      canAdvance = false;
+      for (let i = 0; i < currentWord.length; i++) {
+        const box = document.createElement('div');
+        box.classList.add('letter-box');
+        box.setAttribute('data-index', i);
+        letterContainer.appendChild(box);
+      }
+    }
+
+    function showFeedback(type) {
+      if (type === 'error') {
+        feedbackIcon.textContent = '❌';
+        feedbackIcon.style.color = 'red';
+      } else if (type === 'success') {
+        feedbackIcon.textContent = '✅';
+        feedbackIcon.style.color = 'green';
+      }
+      feedbackIcon.classList.add('show');
+      if (type === 'success') {
+        // Tras 2 segundos se permitirá avanzar
+        setTimeout(() => {
+          feedbackIcon.classList.remove('show');
+          canAdvance = true;
+        }, 2000);
+      } else {
+        setTimeout(() => {
+          feedbackIcon.classList.remove('show');
+        }, 1000);
+      }
+    }
+
+    function handleLetterInput(letter) {
+      if (wordCompleted) return;
+      let found = false;
+      for (let i = 0; i < currentWord.length; i++) {
+        if (currentWord[i] === letter && !revealedLetters[i]) {
+          revealedLetters[i] = true;
+          const box = letterContainer.querySelector(`.letter-box[data-index='${i}']`);
+          box.textContent = letter;
+          box.classList.add('revealed', 'reveal-animation');
+          box.addEventListener('animationend', () => {
+            box.classList.remove('reveal-animation');
+          }, { once: true });
+          found = true;
+        }
+      }
+      if (found) {
+        if (revealedLetters.every(v => v)) {
+          wordCompleted = true;
+          showFeedback('success');
+        }
+      } else {
+        showFeedback('error');
+      }
+    }
+
+    function revealWord() {
+      for (let i = 0; i < currentWord.length; i++) {
+        if (!revealedLetters[i]) {
+          revealedLetters[i] = true;
+          const box = letterContainer.querySelector(`.letter-box[data-index='${i}']`);
+          box.textContent = currentWord[i];
+          box.classList.add('revealed', 'reveal-animation');
+          box.addEventListener('animationend', () => {
+            box.classList.remove('reveal-animation');
+          }, { once: true });
+        }
+      }
+      wordCompleted = true;
+      showFeedback('success');
+    }
+
+    function nextWord() {
+      // Si ya se está en transición, se ignoran pulsaciones adicionales
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      if (currentWordIndex >= words.length - 1) {
+        // Finalizar el juego
+        gameContainer.classList.add('fade-out');
+        gameContainer.addEventListener('animationend', () => {
+          gameContainer.style.display = 'none';
+          endScreen.style.display = 'flex';
+          endScreen.classList.add('fade-in');
+          // Reiniciamos la bandera tras la animación final
+          endScreen.addEventListener('animationend', () => {
+            isTransitioning = false;
+          }, { once: true });
+        }, { once: true });
+        return;
+      }
+      // Animaciones fade-out en letras e imágenes
+      letterContainer.classList.add('fade-out');
+      imageGrid.classList.add('fade-out');
+
+      letterContainer.addEventListener('animationend', function handleFadeOut() {
+        letterContainer.classList.remove('fade-out');
+        imageGrid.classList.remove('fade-out');
+        currentWordIndex++;
+        initWord();
+        letterContainer.classList.add('fade-in');
+        imageGrid.classList.add('fade-in');
+        letterContainer.addEventListener('animationend', function handleFadeIn() {
+          letterContainer.classList.remove('fade-in');
+          imageGrid.classList.remove('fade-in');
+          isTransitioning = false;
+        }, { once: true });
+      }, { once: true });
+    }
+
+    function updateImageSize() {
+      const gap = 10;
+      const inputAreaHeight = document.getElementById('inputArea').offsetHeight;
+      const availableHeight = window.innerHeight - 250 - inputAreaHeight;
+      const maxImageSizeHeight = (availableHeight - gap) / 2;
+      const maxImageSizeWidth = (window.innerWidth - gap) / 2;
+      const imageSize = Math.floor(Math.min(maxImageSizeHeight, maxImageSizeWidth));
+      document.querySelectorAll('.image-item').forEach(item => {
+        item.style.width = imageSize + 'px';
+        item.style.height = imageSize + 'px';
+      });
+      imageGrid.style.width = (imageSize * 2 + gap) + 'px';
+    }
+
+    window.addEventListener('resize', updateImageSize);
+
+    document.addEventListener('keydown', (e) => {
+      // Bloquea cualquier entrada si se está en transición
+      if (isTransitioning) return;
+
+      // Si se muestra la splash-screen, espera Enter para iniciar
+      if (splashScreen.style.display !== 'none') {
+        if (e.key === 'Enter') startGame();
+        return;
+      }
+      // Si se muestra la pantalla final, no se procesan más entradas
+      if (endScreen.style.display !== 'none') return;
+      if (e.key === 'Enter') {
+        if (!wordCompleted) {
+          revealWord();
+        } else {
+          // Solo se permite avanzar si han pasado los 2 segundos (canAdvance true)
+          if (!canAdvance) return;
+          nextWord();
+          updateImageSize();
+        }
+      } else {
+        const key = e.key.toUpperCase();
+        if (/^[A-ZÑ]$/.test(key)) {
+          handleLetterInput(key);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
