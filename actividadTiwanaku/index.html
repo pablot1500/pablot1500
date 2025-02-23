@@ -148,18 +148,10 @@
 
   <div class="game-container" id="gameContainer">
     <div class="image-grid" id="imageGrid">
-      <div class="image-item">1
-        <!-- Futuras imágenes se insertarán aquí -->
-      </div>
-      <div class="image-item">2
-        <!-- Futuras imágenes se insertarán aquí -->
-      </div>
-      <div class="image-item">3
-        <!-- Futuras imágenes se insertarán aquí -->
-      </div>
-      <div class="image-item">4
-        <!-- Futuras imágenes se insertarán aquí -->
-      </div>
+      <div class="image-item"></div>
+      <div class="image-item"></div>
+      <div class="image-item"></div>
+      <div class="image-item"></div>
     </div>
     <div id="inputArea">
       <div class="letter-container-wrapper">
@@ -177,7 +169,13 @@
   </div>
 
   <script>
-    const words = ["DUALIDAD", "MONUMENTALIDAD", "RECIPROCIDAD", "COMPLEMENTARIEDAD"];
+    const words = ["MONUMENTALIDAD", "DUALIDAD", "RECIPROCIDAD"];
+    const imagesMapping = {
+      "MONUMENTALIDAD": ["monumentalidad1.jpg", "monumentalidad2.jpg", "monumentalidad3.jpg", "monumentalidad4.jpg"],
+      "DUALIDAD": ["dualidad1.jpg", "dualidad2.jpg", "dualidad3.jpg", "dualidad4.jpg"],
+      "RECIPROCIDAD": ["reciprocidad1.jpg", "reciprocidad2.png", "reciprocidad3.png", "reciprocidad4.png"]
+    };
+
     let currentWordIndex = 0;
     let currentWord = words[currentWordIndex];
     let revealedLetters = Array(currentWord.length).fill(false);
@@ -210,7 +208,7 @@
       currentWord = words[currentWordIndex];
       revealedLetters = Array(currentWord.length).fill(false);
       wordCompleted = false;
-      // Al iniciar cada palabra, reseteamos la posibilidad de avanzar
+      // Reseteamos la posibilidad de avanzar
       canAdvance = false;
       for (let i = 0; i < currentWord.length; i++) {
         const box = document.createElement('div');
@@ -218,6 +216,13 @@
         box.setAttribute('data-index', i);
         letterContainer.appendChild(box);
       }
+      
+      // Actualizar las imágenes del grid según la palabra actual
+      const currentImages = imagesMapping[currentWord];
+      const imageItems = imageGrid.querySelectorAll('.image-item');
+      imageItems.forEach((item, index) => {
+        item.innerHTML = `<img src="imagenes/${currentImages[index]}" alt="${currentWord} ${index+1}" style="width:100%; height:100%; object-fit:cover;">`;
+      });
     }
 
     function showFeedback(type) {
